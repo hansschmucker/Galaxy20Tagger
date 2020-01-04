@@ -32,7 +32,7 @@ namespace Galaxy2_Tagger
 
         protected virtual void Dispose(bool disposing)
         {
-            if (db == null)
+            if (db != null)
             {
                 db.Close();
                 db.Dispose();

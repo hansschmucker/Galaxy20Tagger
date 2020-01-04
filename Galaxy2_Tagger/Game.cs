@@ -45,9 +45,23 @@ namespace Galaxy2_Tagger
 
         private void SetGamePiecesTags(List<string> tags)
         {
+            long gamePieces = 0;
             using (var cmd = instance.db.CreateCommand())
             {
-                cmd.CommandText = "UPDATE GamePieces SET value=@tags WHERE ReleaseKey=@releaseKey AND userId=@id AND gamePieceTypeId=3";
+                cmd.CommandText = "SELECT COUNT(*) FROM GamePieces WHERE ReleaseKey=@releaseKey AND userId=@id AND gamePieceTypeId=3";
+                cmd.Parameters.Add("@releaseKey", SqliteType.Text);
+                cmd.Parameters.Add("@id", SqliteType.Integer);
+                cmd.Parameters["@releaseKey"].Value = id;
+                cmd.Parameters["@id"].Value = instance.UserId;
+                gamePieces = (long)cmd.ExecuteScalar();
+            }
+
+            using (var cmd = instance.db.CreateCommand())
+            {
+                if(gamePieces==0)
+                    cmd.CommandText = "INSERT INTO GamePieces(ReleaseKey,userId,value,gamePieceTypeId) VALUES(@releaseKey,@id,@tags,3)";
+                else
+                    cmd.CommandText = "UPDATE GamePieces SET value=@tags WHERE ReleaseKey=@releaseKey AND userId=@id AND gamePieceTypeId=3";
                 cmd.Parameters.Add("@releaseKey", SqliteType.Text);
                 cmd.Parameters.Add("@tags", SqliteType.Text);
                 cmd.Parameters.Add("@id", SqliteType.Integer);
@@ -98,6 +112,7 @@ namespace Galaxy2_Tagger
                 cmd.Parameters["@tag"].Value = tag;
                     try
                     {
+                        //FIXME: sometimes this runs into a unique constraint... have to investigate
                         cmd.ExecuteNonQuery();
                     }
                     catch (Exception) { }
