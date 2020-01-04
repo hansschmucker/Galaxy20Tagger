@@ -13,6 +13,11 @@ namespace Galaxy2_Tagger
         {
             db = new SqliteConnection("Data Source=" + Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + "\\GOG.com\\Galaxy\\storage\\galaxy-2.0.db;");
             db.Open();
+            using (var command = db.CreateCommand())
+            {
+                command.CommandText = "PRAGMA journal_mode=WAL";
+                command.ExecuteNonQuery();
+            }
         }
         private long _userId = -1;
         public long UserId
@@ -51,8 +56,7 @@ namespace Galaxy2_Tagger
 
             using (var cmd = db.CreateCommand())
             {
-                cmd.CommandText= "SELECT p.releaseKey,p.title,t.tag FROM ( select releaseKey,max(\"value\") AS Title from GamePieces where gamePieceTypeId in (4726,1347) group by releaseKey ) AS p LEFT JOIN UserReleaseTags AS t on p.releaseKey=t.releaseKey ORDER by p.title ASC";
-                //cmd.CommandText = "SELECT p.releaseKey as ReleaseKey,p.title as Title,case when t.value is null then '{\"tags\":[]}' ELSE t.value END as Tags FROM ( select releaseKey,max(\"value\") AS Title from GamePieces where gamePieceTypeId in (4726,1347) group by releaseKey ) AS p LEFT JOIN GamePieces AS t on p.releaseKey=t.releaseKey and gamePieceTypeId=3 order by p.title ASC, p.releaseKey ASC;";
+                cmd.CommandText= "SELECT p.releaseKey,p.title,t.tag FROM ( select releaseKey,max(\"value\") AS Title from GamePieces where gamePieceTypeId in (4726,1347) group by releaseKey ) AS p LEFT JOIN UserReleaseTags AS t on p.releaseKey=t.releaseKey WHERE p.releaseKey IN (SELECT releaseKey FROM ReleaseProperties WHERE isDlc=0 AND isVisibleInLibrary=1) ORDER by p.title ASC";
                 var r = cmd.ExecuteReader();
                 while (r.Read())
                 {
@@ -63,8 +67,6 @@ namespace Galaxy2_Tagger
                         tag=r.GetString(2);
 
                     var id = r.GetString(0);
-                    /*var tags = (string[])((ArrayList)(ser.Deserialize<Dictionary<string, object>>(r.GetString(2))["tags"])).ToArray(typeof(string));
-                    var game = new Game() { id = r.GetString(0), title = ser.Deserialize<Dictionary<string, string>>(r.GetString(1))["title"], tags = tags,instance=this };*/
                     if (!lines.ContainsKey(id))
                         lines.Add(id, new Game() { id = id, title = ser.Deserialize<Dictionary<string, string>>(r.GetString(1))["title"], tags = new string[0], instance = this });
 

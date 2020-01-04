@@ -38,13 +38,13 @@
             this.GamesList.Location = new System.Drawing.Point(12, 12);
             this.GamesList.Name = "GamesList";
             this.GamesList.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.GamesList.Size = new System.Drawing.Size(220, 602);
+            this.GamesList.Size = new System.Drawing.Size(220, 589);
             this.GamesList.TabIndex = 0;
             this.GamesList.SelectedValueChanged += new System.EventHandler(this.GamesList_SelectedValueChanged);
             // 
             // SaveChanges
             // 
-            this.SaveChanges.Location = new System.Drawing.Point(532, 12);
+            this.SaveChanges.Location = new System.Drawing.Point(599, 580);
             this.SaveChanges.Name = "SaveChanges";
             this.SaveChanges.Size = new System.Drawing.Size(75, 23);
             this.SaveChanges.TabIndex = 1;
@@ -52,15 +52,17 @@
             this.SaveChanges.UseVisualStyleBackColor = true;
             this.SaveChanges.Click += new System.EventHandler(this.DoSaveChanges);
             // 
-            // Form1
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1122, 615);
+            this.ClientSize = new System.Drawing.Size(686, 615);
             this.Controls.Add(this.SaveChanges);
             this.Controls.Add(this.GamesList);
-            this.Name = "Form1";
-            this.Text = "Form1";
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.Name = "MainForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Tagger";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
 

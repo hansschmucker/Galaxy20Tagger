@@ -23,7 +23,8 @@ namespace Galaxy2_Tagger
 
             var list = new List<string>(tags){tag};
 
-            SetGamePiecesTags(list);
+            //SetGamePiecesTags(list);
+            DeleteUserReleaseTag(tag);
             InsertUserReleaseTag(tag);
 
             tags = list.ToArray();
@@ -36,7 +37,7 @@ namespace Galaxy2_Tagger
             var list = new List<string>(tags);
             list.Remove(tag);
 
-            SetGamePiecesTags(list);
+            //SetGamePiecesTags(list);
             DeleteUserReleaseTag(tag);
 
             tags = list.ToArray();
@@ -110,9 +111,10 @@ namespace Galaxy2_Tagger
                 cmd.Parameters["@releaseKey"].Value = id;
                 cmd.Parameters["@id"].Value = instance.UserId;
                 cmd.Parameters["@tag"].Value = tag;
+
+                    //FIXME: sometimes this runs into a unique constraint... have to investigate
                     try
                     {
-                        //FIXME: sometimes this runs into a unique constraint... have to investigate
                         cmd.ExecuteNonQuery();
                     }
                     catch (Exception) { }
